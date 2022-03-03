@@ -6,5 +6,5 @@ Load it into OBS via a web browser source and make sure you have OBS-Websockets 
 Add +Border to the stream source to draw a border around it, change the CSS to adjust the borders as needed.
 
 # Important
-Leaverage obs-websocket.js from the dist on obs-websocket-js. Without their work this project would not have been possible.
+Leaverages obs-websocket.js from the dist on obs-websocket-js. Without their work this project would not have been possible.
 https://github.com/obs-websocket-community-projects/obs-websocket-js
