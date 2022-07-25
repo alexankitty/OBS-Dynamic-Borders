@@ -57,8 +57,8 @@ class borderObj {
 
     updateProperties(){
         //size and position
-        this.borderWrap.style.width = `${this.sizeX}px`;
-        this.borderWrap.style.height = `${this.sizeY}px`;
+        this.borderWrap.style.width = `${this.sizeX - 1}px`;
+        this.borderWrap.style.height = `${this.sizeY - 1}px`;
         this.borderWrap.style.left = `${this.posX - pxoffset}px`
         this.borderWrap.style.top = `${this.posY - pxoffset}px`
         if(!this.hidden)
@@ -85,8 +85,19 @@ async function updateBorder(){
             }
         let posX = obj.position.x;
         let posY = obj.position.y;
-        let sizeX = obj.width - ((obj.crop.left * obj.scale.x) + (obj.crop.right * obj.scale.x));
-        let sizeY = obj.height - ((obj.crop.top * obj.scale.y) + (obj.crop.bottom * obj.scale.y));
+        let sizeX = Math.abs(obj.width) - ((obj.crop.left * Math.abs(obj.scale.x)) + (obj.crop.right * Math.abs(obj.scale.x)));
+        let sizeY = Math.abs(obj.height) - ((obj.crop.top * Math.abs(obj.scale.y)) + (obj.crop.bottom * Math.abs(obj.scale.y)));
+        if(obj.width < 0) {//adjust if flipped
+            posX -= sizeX;
+        }
+        if(obj.height < 0){
+            posY -= sizeY;
+        }
+        console.log(obj);
+        console.log(posX);
+        console.log(posY);
+        console.log(sizeX);
+        console.log(sizeY);
         borderArr[x++].setProperties(posX, posY, sizeX, sizeY, false);
     })
 
@@ -110,7 +121,7 @@ async function initBorder() {
 
 async function registerBorderUpdate(){
     checkBgMode();
-    const password = "e%2Nnz4F+C5v9wT$m^+NT=bq";
+    const password = "wBhhqDg8-9zg6u*&znN#nCc?";
     await connect("127.0.0.1:4444", password)
     borderItems = new SceneItem("+Border");
     initBorder();
