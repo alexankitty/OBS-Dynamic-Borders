@@ -1,73 +1,76 @@
-const obs = new OBSWebSocket();
+async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
+const obs = new OBSWebSocket();
 
 class SceneItem {
     constructor(SceneItemMatch) {
-        this._events = {
-            initialize: [],
-            update: []
-        };
-        this.Match = SceneItemMatch
-        this.initialize();
-        this.registerOBS();
+        return ( async () => {
+            this._events = {
+                initialize: [],
+                update: []
+            };
+            this.Match = SceneItemMatch
+            this.initialize();
+            this.registerOBS();
+            await sleep(500);
+            return this;
+        })();
     }
+
     async initialize() {
         //run me again if the scene changes
-        this.Items = {};
         this.List = await this.MatchSceneItems(this.Match);
         
-        await this.update();
+        //await this.update();
     }
     async update() {
         //run me if a change is detected.
-        this.List.forEach(async item => {
-            this.Items[item] = await this.GetProperties(item);
-        })
+        this.List = await this.MatchSceneItems(this.Match);
     }
 
     //Functions for pulling info
     async MatchSceneItems(match) {
-        let outArray = [];
-        let data = await obs.send("GetSceneItemList")
-        let x = 0;
+        let outObj = new Object;
+        let sceneName = await obs.call('GetCurrentProgramScene').then(data => {return data.currentProgramSceneName})
+        let data = await obs.call("GetSceneItemList", {sceneName: sceneName});
         for(let i = 0; i < data.sceneItems.length; i++) {
-            if(data.sceneItems[i].sourceName.toLowerCase().includes(match.toLowerCase())) 
-            outArray[x++] = data.sceneItems[i].sourceName;
+            if(data.sceneItems[i].sourceName.toLowerCase().includes(match.toLowerCase())){
+                outObj[data.sceneItems[i].sourceName] = data.sceneItems[i];
+            }
         }
-        return outArray;
+        outObj["Length"];
+        return outObj;
     }
     
     async GetProperties(item) {
-        let itemProperties = await obs.send("GetSceneItemProperties",{
-            item: item
-        })
-        return itemProperties;
+        let itemList = await this.MatchSceneItems(this.Match);
+        return itemList[item];
+        //let itemProperties = 
+        //return itemProperties;
     }
 
     //register listeners so our object can be autonomous
     async registerOBS() {
-        let initList = ["SwitchScenes", "SourceCreated", "SourceDestroyed", "SourceRenamed"]
-        let updateList = ["SceneItemVisibilityChanged", "SceneItemTransformChanged"];
+        let initList = ["SceneTransitionStarted", "SceneItemCreated", "SceneItemRemoved", "SceneItemListReindexed"]
+        let updateList = ["SceneItemEnableStateChanged", "SceneItemTransformChanged"];
         initList.forEach(item => {
             obs.on(item, async () => {
-                console.log(item);
                 await this.initialize();
-                this.emit("initialize", this.Items)
+                this.emit("initialize")
             })
         });
         updateList.forEach(item => {
             obs.on(item, async () => {
-                
                 await this.update();
-                this.emit("update", this.Items);
+                this.emit("update");
             })
         });
     }
 
     on(name, listener) {
-        console.log(this._events);
         if(!this._events[name]) this._events[name] = [];
-        console.log(this._events);
         this._events[name].push(listener);
     }
 
@@ -94,9 +97,17 @@ class SceneItem {
 
 
 async function connect(address, password){
-    await obs.connect({
-    address: address,
-    password: password
-  });
+    try {
+        const {
+        obsWebSocketVersion,
+        negotiatedRpcVersion
+        } = await obs.connect(address, password, {
+        eventSubscriptions: 525311, //Bitwise OR of 1023 (all) and 524288 (1 << 19 scene item change intent)
+        rpcVersion: 1
+        });
+        console.log(`Connected to server ${obsWebSocketVersion} (using RPC ${negotiatedRpcVersion})`);
+        const {currentProgramSceneName} = await obs.call('GetCurrentProgramScene');
+    } catch (error) {
+        console.error('Failed to connect', error.code, error.message);
+    }
 }
-

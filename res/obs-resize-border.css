@@ -14,6 +14,8 @@ body {
 }
   
 .borderwrap {
+    animation: fadeIn 600ms;
+    image-rendering: crisp-edges;
     position: absolute;
     border: 25px solid transparent;
     border-image-source: url('Border New.png');
@@ -40,35 +42,39 @@ body {
 }
 
 .borderwrap:before, .borderwrap:after {
+    animation: fadeIn 600ms;
     content: "";
 	position: absolute;
-	top: -25px;
-	height: 32px;
-	width: 32px;
+	top: -24px;
+	height: 31px;
+	width: 29px;
+    image-rendering: pixelated;
 	background-image: url('Sprite Print colored.png');
-	background-size: 32px 32px;
+	background-size: 29px 31px;
 	background-position: top center, bottom center;
 	background-repeat: no-repeat;
 }
 
 .border:before, .border:after {
+    animation: fadeIn 600ms;
     content: "";
 	position: absolute;
-	bottom: -25px;
-	height: 32px;
-	width: 32px;
+	bottom: -23px;
+	height: 31px;
+	width: 29px;
+    image-rendering: pixelated;
 	background-image: url('Sprite Print colored.png');
-	background-size: 32px 32px;
+	background-size: 29px 31px;
 	background-position: top center, bottom center;
 	background-repeat: no-repeat;
 }
 
 .borderwrap:before, .border:before {
-    left: -25px;
+    left: -22px;
 }
 
 .border:after, .borderwrap:after  {
-    right: -25px
+    right: -22px
 }
 
 .border {
@@ -81,3 +87,9 @@ body {
     width: 100%;
     background:rgba(0,0,0,.5);
 }
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
