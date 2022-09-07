@@ -86,7 +86,7 @@ async function updateBorder(){
     let x = 0;
     let list = borderItems.List;
     Object.entries(list).forEach(async item => {
-        item = item[0];
+        item = item[0];// we only care about the array index here.
         let obj = borderItems.List[item].sceneItemTransform;
         let visible = borderItems.List[item].sceneItemEnabled;
         if(obj.width == 0 || visible == false)

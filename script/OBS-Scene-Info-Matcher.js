@@ -20,10 +20,7 @@ class SceneItem {
     }
 
     async initialize() {
-        //run me again if the scene changes
         this.List = await this.MatchSceneItems(this.Match);
-        
-        //await this.update();
     }
     async update() {
         //run me if a change is detected.
@@ -40,15 +37,12 @@ class SceneItem {
                 outObj[data.sceneItems[i].sourceName] = data.sceneItems[i];
             }
         }
-        outObj["Length"];
         return outObj;
     }
     
     async GetProperties(item) {
         let itemList = await this.MatchSceneItems(this.Match);
         return itemList[item];
-        //let itemProperties = 
-        //return itemProperties;
     }
 
     //register listeners so our object can be autonomous
@@ -106,7 +100,6 @@ async function connect(address, password){
         rpcVersion: 1
         });
         console.log(`Connected to server ${obsWebSocketVersion} (using RPC ${negotiatedRpcVersion})`);
-        const {currentProgramSceneName} = await obs.call('GetCurrentProgramScene');
     } catch (error) {
         console.error('Failed to connect', error.code, error.message);
     }
