@@ -1,3 +1,8 @@
+:root {
+    --border-deco-size: 3vh;
+    --border-size: 2.1vh;
+}
+
 html, body {
 	padding: 0px;
 	margin: 0px;
@@ -17,7 +22,7 @@ body {
     animation: fadeIn 600ms;
     image-rendering: crisp-edges;
     position: absolute;
-    border: 25px solid transparent;
+    border: var(--border-size) solid transparent;
     border-image-source: url('Border New.png');
     border-image-slice: 25;
     flex: 0 0 auto;
@@ -25,7 +30,7 @@ body {
 
 .noborder {
     position: absolute;
-    border: 25px solid transparent;
+    border: var(--border-size) solid transparent;
     flex: 0 0 auto;
 }
 
@@ -45,36 +50,38 @@ body {
     animation: fadeIn 600ms;
     content: "";
 	position: absolute;
-	top: -24px;
-	height: 31px;
-	width: 29px;
-    image-rendering: pixelated;
-	background-image: url('Sprite Print colored.png');
-	background-size: 29px 31px;
+	top: calc(var(--border-size) * -1);
+	height: var(--border-deco-size);
+	width:  var(--border-deco-size);
+    image-rendering: smooth;
+	background-image: url('SpritePrintNew.png');
+	background-size: var(--border-deco-size) var(--border-deco-size);
 	background-position: top center, bottom center;
 	background-repeat: no-repeat;
+    transform: rotate(var(--rotation));
 }
 
 .border:before, .border:after {
     animation: fadeIn 600ms;
     content: "";
 	position: absolute;
-	bottom: -23px;
-	height: 31px;
-	width: 29px;
-    image-rendering: pixelated;
-	background-image: url('Sprite Print colored.png');
-	background-size: 29px 31px;
+	bottom: calc(var(--border-size) * -1);
+	height: var(--border-deco-size);
+	width: var(--border-deco-size);
+    image-rendering: smooth;
+	background-image: url('SpritePrintNew.png');
+	background-size: var(--border-deco-size) var(--border-deco-size);
 	background-position: top center, bottom center;
 	background-repeat: no-repeat;
+    transform: rotate(var(--rotation));
 }
 
 .borderwrap:before, .border:before {
-    left: -22px;
+    left: calc(var(--border-size) * -1);
 }
 
 .border:after, .borderwrap:after  {
-    right: -22px
+    right: calc(var(--border-size) * -1);
 }
 
 .border {

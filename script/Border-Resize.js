@@ -2,7 +2,7 @@ var URLParams;
 var bgMode;
 var borderArr = [];
 var borderItems ;
-const pxoffset = 25;
+const pxoffset = "2.1vh";
 
 function checkBgMode() {
     URLParams = new URLSearchParams(window.location.search);
@@ -56,12 +56,13 @@ class borderObj {
         this.borderWrap.appendChild(this.borderRight);
     }
 
-    setProperties(posX, posY, sizeX, sizeY, hidden){
+    setProperties(posX, posY, sizeX, sizeY, hidden, rotation){
         this.posX = posX;
         this.posY = posY;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         this.hidden = hidden;
+        this.rotation = rotation
         this.updateProperties();
     }
 
@@ -69,8 +70,11 @@ class borderObj {
         //size and position
         this.borderWrap.style.width = `${this.sizeX - 1}px`;
         this.borderWrap.style.height = `${this.sizeY - 1}px`;
-        this.borderWrap.style.left = `${this.posX - pxoffset}px`
-        this.borderWrap.style.top = `${this.posY - pxoffset}px`
+        this.borderWrap.style.left = `calc(${this.posX}px - ${pxoffset})`
+        this.borderWrap.style.top = `calc(${this.posY }px - ${pxoffset})`
+        this.borderWrap.style.transform = `rotate(${this.rotation}deg)`;
+        this.borderWrap.style.transformOrigin = `${pxoffset} ${pxoffset}`;
+        this.borderWrap.style.setProperty('--rotation', `${this.rotation * -1}deg`)
         if(!this.hidden)
         this.borderWrap.style.display = "unset";
         if(this.hidden)
@@ -102,6 +106,7 @@ async function updateBorder(){
         let cropBot = obj.cropBottom;
         let cropLeft = obj.cropLeft;
         let cropRight = obj.cropRight;
+        let rotation = obj.rotation;
         let sizeX = Math.abs(obj.width) - ((cropLeft * Math.abs(scaleX)) + (cropRight * Math.abs(scaleX)));
         let sizeY = Math.abs(obj.height) - ((cropTop * Math.abs(scaleY)) + (cropBot * Math.abs(scaleY)));
         if(obj.width < 0) {//adjust if flipped
@@ -110,7 +115,7 @@ async function updateBorder(){
         if(obj.height < 0){
             posY -= sizeY;
         }
-        borderArr[x++].setProperties(posX, posY, sizeX, sizeY, false);
+        borderArr[x++].setProperties(posX, posY, sizeX, sizeY, false, rotation);
     })
 
 }
